@@ -1,6 +1,4 @@
-from redbot.core.bot import Red
-from .ageroll import AGERoll
+from .AGERoll import AGERoll
 
-
-def setup(bot: Red):
-    bot.add_cog(AGERoll(bot))
+def setup(bot):
+    bot.add_cog(AGERoll())
