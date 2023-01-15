@@ -1,5 +1,3 @@
-import datetime
-from redbot.core import commands
 
 class CliveCog(commands.Cog):
     def __init__(self, bot):
@@ -12,9 +10,11 @@ class CliveCog(commands.Cog):
             await ctx.send("This command can only be used in the `live` channel.")
             return
         # Get the first message in the channel
-        async for message in ctx.channel.history(limit=1):
-            self.memorized_message = message.content
-            break
+        first_message = await ctx.channel.history(limit=1).flatten()
+        self.memorized_message = first_message[0].content if first_message else None
+        if self.memorized_message is None:
+            await ctx.send("No message to remember.")
+            return
         # Delete all messages in the channel
         await ctx.channel.purge(limit=None)
 
@@ -31,4 +31,4 @@ class CliveCog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(CliveCog(bot))
+    bot.add_cog(CliveCog(bot))        
