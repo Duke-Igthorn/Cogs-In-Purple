@@ -1,3 +1,5 @@
+import datetime
+from redbot.core import commands
 
 class CliveCog(commands.Cog):
     def __init__(self, bot):
