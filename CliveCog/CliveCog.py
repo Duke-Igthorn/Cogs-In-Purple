@@ -29,7 +29,7 @@ class CliveCog(commands.Cog):
         timestamp_str = f"<t:{int(timestamp)}:f>"
 
         # Send the memorized message with the timestamp
-        await ctx.send(f"{self.memorized_message} (Memorized on {timestamp_str})")
+        await ctx.send(f"{self.memorized_message} {timestamp_str})")
 
 
 def setup(bot):
