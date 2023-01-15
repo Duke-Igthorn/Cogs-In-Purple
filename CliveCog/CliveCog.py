@@ -29,10 +29,11 @@ class CliveCog(commands.Cog):
         timestamp_str = f"<t:{int(timestamp)}:f>"
         
         # Replace the existing timestamp with the new timestamp
-        self.memorized_message = self.memorized_message.replace("<t:", "<t_old:")
+        self.memorized_message = self.memorized_message.replace("<t:*", timestamp_str)
         
         # Send the memorized message with the new timestamp
-        await ctx.send(f"{self.memorized_message} {timestamp_str}")
+        await ctx.send(f"{self.memorized_message}")
+
 
 def setup(bot):
     bot.add_cog(CliveCog(bot))        
