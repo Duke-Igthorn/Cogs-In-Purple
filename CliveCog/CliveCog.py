@@ -22,7 +22,7 @@ class CliveCog(commands.Cog):
 
         # Get the date 7 days from now at 1am
         date = datetime.datetime.now() + datetime.timedelta(days=7)
-        date = date.replace(hour=1, minute=0, second=0, microsecond=0)
+        date = date.replace(hour=0, minute=0, second=0, microsecond=0)
         
         #Format the timestamp in the desired format
         timestamp = date.timestamp()
