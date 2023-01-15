@@ -12,7 +12,7 @@ class CliveCog(commands.Cog):
             await ctx.send("This command can only be used in the `live` channel.")
             return
         # Get the first message in the channel
-        first_message = await ctx.channel.history(limit=1).flatten()
+        first_message = await ctx.channel.history(limit=1, oldest_first=True).flatten()
         self.memorized_message = first_message[0].content if first_message else None
         if self.memorized_message is None:
             await ctx.send("No message to remember.")
