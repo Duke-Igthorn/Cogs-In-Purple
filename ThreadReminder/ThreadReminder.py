@@ -82,4 +82,4 @@ async def on_message(self, message):
                     break
 
 def setup(bot):
-bot.add_cog(ThreadReminder(bot))
+    bot.add_cog(ThreadReminder(bot))
