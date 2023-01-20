@@ -1,5 +1,5 @@
 import discord
-from redbot.core.commands import Cog
+from redbot.core import commands
 import asyncio
 from datetime import datetime
 import json
