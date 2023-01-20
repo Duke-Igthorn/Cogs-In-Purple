@@ -20,7 +20,7 @@ class ThreadReminder(commands.Cog):
             json.dump(self.settings, f)
 
     @commands.command()
-async def threm(self, ctx, action: str, channel: discord.TextChannel = None, thread: str = None, *keywords):
+    async def threm(self, ctx, action: str, channel: discord.TextChannel = None, thread: str = None, *keywords):
     if action == "set":
         if channel is None or thread is None or len(keywords) == 0:
             await ctx.send("Please provide a channel, thread and at least one keyword.")
