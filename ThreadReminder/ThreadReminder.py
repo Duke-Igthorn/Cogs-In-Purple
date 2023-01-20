@@ -61,13 +61,13 @@ class ThreadReminder(commands.Cog):
             if len(self.settings) == 0:
                 await ctx.send("No thread reminders have been set up yet.")
                 return
-                message = "Thread Reminders:\n"
+            message = "Thread Reminders:\n"
             for channel_id in self.settings:
                 channel = self.bot.get_channel(int(channel_id))
                 if channel is None:
                     continue
                 message += "- {}: thread {}, keywords {}, active: {}\n".format(channel.mention, self.settings[channel_id]["thread"], self.settings[channel_id]["keywords"], self.settings[channel_id]["active"])
-                await ctx.send(message)
+            await ctx.send(message)
 
     @commands.Cog.listener()
     async def on_message(self, message):
