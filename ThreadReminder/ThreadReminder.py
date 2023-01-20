@@ -67,7 +67,7 @@ async def threm(self, ctx, action: str, channel: discord.TextChannel = None, thr
             if channel is None:
                 continue
             message += "- {}: thread {}, keywords {}, active: {}\n".format(channel.mention, self.settings[channel_id]["thread"], self.settings[channel_id]["keywords"], self.settings[channel_id]["active"])
-        await ctx.send(message)
+            await ctx.send(message)
 
 @commands.Cog.listener()
 async def on_message(self, message):
