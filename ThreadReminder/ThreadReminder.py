@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 
 class ThreadReminder(commands.Cog):
-    def init(self, bot):
+    def __init__(self, bot):
         self.bot = bot
         self.settings = {}
         self.last_message_timestamp = {}
