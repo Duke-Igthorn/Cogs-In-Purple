@@ -69,17 +69,17 @@ class ThreadReminder(commands.Cog):
                 message += "- {}: thread {}, keywords {}, active: {}\n".format(channel.mention, self.settings[channel_id]["thread"], self.settings[channel_id]["keywords"], self.settings[channel_id]["active"])
                 await ctx.send(message)
 
-@commands.Cog.listener()
-async def on_message(self, message):
-    if message.author.bot:
-        return
-    if message.channel.id in self.settings and self.settings[message.channel.id]["active"]:
-        for keyword in self.settings[message.channel.id]["keywords"]:
-            if keyword.lower() in message.content.lower():
-                if message.channel.id not in self.last_message_timestamp or (datetime.now() - self.last_message_timestamp[message.channel.id]).total_seconds() > 600:
-                    self.last_message_timestamp[message.channel.id] = datetime.now()
-                    await message.channel.send("A thread about this topic already exists: {}\n{}".format(self.settings[message.channel.id]["thread"], self.settings[message.channel.id]["thread"]))
-                    break
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        if message.channel.id in self.settings and self.settings[message.channel.id]["active"]:
+            for keyword in self.settings[message.channel.id]["keywords"]:
+                if keyword.lower() in message.content.lower():
+                    if message.channel.id not in self.last_message_timestamp or (datetime.now() - self.last_message_timestamp[message.channel.id]).total_seconds() > 600:
+                        self.last_message_timestamp[message.channel.id] = datetime.now()
+                        await message.channel.send("A thread about this topic already exists: {}\n{}".format(self.settings[message.channel.id]["thread"], self.settings[message.channel.id]["thread"]))
+                        break
 
 def setup(bot):
     bot.add_cog(ThreadReminder(bot))
