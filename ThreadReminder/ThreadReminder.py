@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from redbot.core.commands import Cog
 import asyncio
 from datetime import datetime
 import json
@@ -61,7 +61,7 @@ class ThreadReminder(commands.Cog):
             if len(self.settings) == 0:
                 await ctx.send("No thread reminders have been set up yet.")
                 return
-            message = "Thread Reminders:\n"
+                message = "Thread Reminders:\n"
             for channel_id in self.settings:
                 channel = self.bot.get_channel(int(channel_id))
                 if channel is None:
