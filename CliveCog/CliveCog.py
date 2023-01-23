@@ -21,10 +21,10 @@ class CliveCog(commands.Cog):
         await ctx.channel.purge(limit=None)
 
         # Get the date 7 days from now at midnight
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         days_ahead = 7 - now.weekday()
         next_monday = now + datetime.timedelta(days=days_ahead)
-        next_monday = next_monday.replace(hour=1, minute=0, second=0, microsecond=0)
+        next_monday = next_monday.replace(hour=2, minute=0, second=0, microsecond=0)
 
         # Format the timestamp in the desired format
         timestamp = int(next_monday.timestamp())
