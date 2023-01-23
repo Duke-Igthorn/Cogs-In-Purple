@@ -31,7 +31,7 @@ class CliveCog(commands.Cog):
         timestamp_str = f"<t:{timestamp}:f>"
         
         # Replace the existing timestamp with the new timestamp
-        self.memorized_message = self.memorized_message.replace("<t:*", timestamp_str)
+        self.memorized_message = self.memorized_message.replace("<t:", timestamp_str)
         
         # If the message still doesn't have timestamp, add it to the end
         if "<t:" not in self.memorized_message:
