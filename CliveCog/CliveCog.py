@@ -21,7 +21,7 @@ class CliveCog(commands.Cog):
         await ctx.channel.purge(limit=None)
 
         # Get the date 7 days from now at midnight
-        date = datetime.datetime.now().replace(hour=1, minute=0, second=0, microsecond=0) + datetime.timedelta(days=7)
+        date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=7)
         
         #Format the timestamp in the desired format
         timestamp = date.timestamp()
