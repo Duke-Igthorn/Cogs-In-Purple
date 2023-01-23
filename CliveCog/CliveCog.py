@@ -21,11 +21,14 @@ class CliveCog(commands.Cog):
         await ctx.channel.purge(limit=None)
 
         # Get the date 7 days from now at midnight
-        date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=7)
-        
-        #Format the timestamp in the desired format
-        timestamp = date.timestamp()
-        timestamp_str = f"<t:{int(timestamp)}:f>"
+        now = datetime.datetime.now()
+        days_ahead = 7 - now.weekday()
+        next_monday = now + datetime.timedelta(days=days_ahead)
+        next_monday = next_monday.replace(hour=1, minute=0, second=0, microsecond=0)
+
+        # Format the timestamp in the desired format
+        timestamp = int(next_monday.timestamp())
+        timestamp_str = f"<t:{timestamp}:f>"
         
         # Replace the existing timestamp with the new timestamp
         self.memorized_message = self.memorized_message.replace("<t:*", timestamp_str)
