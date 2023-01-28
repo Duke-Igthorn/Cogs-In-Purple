@@ -1,38 +1,27 @@
-import asyncio
-import datetime
 import discord
-from discord import TextChannel
-from redbot.core import commands
+from discord.ext import commands
 
 class MessageMover(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def msgmvr(self, ctx, message_id: int, destination: discord.TextChannel, *message_ids: int):
-        # Fetch the original message by ID
-        message = await ctx.channel.fetch_message(message_id)
-
-        # Add the original message to the destination channel
-        await destination.send(f"{message.author.mention} said at {message.created_at}:\n{message.content}")
-
-        # Delete the original message
-        await message.delete()
-
-        if message_ids:
-            # Fetch all additional messages by ID
-            messages = await ctx.channel.fetch_messages(message_ids)
-
-            # Sort messages by their creation time
-            messages = sorted(messages, key=lambda m: m.created_at)
-
-            # Add all additional messages to the destination channel
-            for message in messages:
-                await destination.send(f"{message.author.mention} said at {message.created_at}:\n{message.content}")
-
-            # Delete all additional messages
-            await ctx.channel.delete_messages(messages)
-
+    async def msgmvr(self, ctx, destination: discord.TextChannel, *message_ids: int):
+        messages = []
+        for message_id in message_ids:
+            message = await ctx.channel.fetch_message(message_id)
+            messages.append(message)
+        
+        messages.sort(key=lambda x: x.created_at)
+        
+        for message in messages:
+            await message.pin()
+            await message.unpin()
+            await message.delete()
+            await destination.send(content=message.content,
+                                   embed=message.embeds[0] if message.embeds else None,
+                                   file=message.attachments[0].url if message.attachments else None,
+                                   allowed_mentions=discord.AllowedMentions(users=False, roles=False, everyone=False))
+            
 
 def setup(bot):
     bot.add_cog(MessageMover(bot))
