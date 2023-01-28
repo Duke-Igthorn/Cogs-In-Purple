@@ -11,18 +11,20 @@ class MessageMover(commands.Cog):
 
     @commands.command()
     async def msgmvr(self, ctx, destination: discord.TextChannel, *message_ids: int):
-        if not message_ids or not destination:
-            return await ctx.send("Please provide a destination channel and at least one message ID.")
-        
+        if not message_ids:
+            await ctx.send('Please provide at least one message ID')
+            return
         messages = []
         for message_id in message_ids:
             try:
                 message = await ctx.channel.fetch_message(message_id)
-                messages.append(message)
             except discord.NotFound:
-                return await ctx.send(f"Message with ID {message_id} not found.")
+                await ctx.send(f"Could not find a message with ID {message_id}")
+                continue
             except discord.Forbidden:
-                return await ctx.send(f"I don't have permission to access message with ID {message_id}.")
+                await ctx.send(f"I am not allowed to access message {message_id}")
+                continue
+            messages.append(message)
         
         messages.sort(key=lambda x: x.created_at)
         
@@ -33,8 +35,8 @@ class MessageMover(commands.Cog):
             await destination.send(content=message.content,
                                    embed=message.embeds[0] if message.embeds else None,
                                    file=message.attachments[0].url if message.attachments else None,
-                                   allowed_mentions=discord.AllowedMentions(users=False, roles=False, everyone=False),
-                                   author=message.author)
+                                   allowed_mentions=discord.AllowedMentions(users=False, roles=False, everyone=False))
+            
 
 def setup(bot):
     bot.add_cog(MessageMover(bot))
