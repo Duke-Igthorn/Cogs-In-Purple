@@ -23,7 +23,7 @@ class MessageMover(commands.Cog):
                 message = await ctx.channel.fetch_message(message_id)
                 messages.append(message)
             except discord.errors.NotFound:
-            await ctx.send(f"The message with ID {message_id} could not be found in this channel.")
+                await ctx.send(f"The message with ID {message_id} could not be found in this channel.")
             continue
     
         messages.sort(key=lambda x: x.created_at)
