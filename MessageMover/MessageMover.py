@@ -18,10 +18,9 @@ class MessageMover(commands.Cog):
         messages.sort(key=lambda x: x.created_at)
         
         for message in messages:
-            await message.pin()
-            await message.unpin()
             await message.delete()
             await destination.send(content=message.content,
+                                   author=message.author,
                                    embed=message.embeds[0] if message.embeds else None,
                                    file=message.attachments[0].url if message.attachments else None,
                                    allowed_mentions=discord.AllowedMentions(users=False, roles=False, everyone=False))
