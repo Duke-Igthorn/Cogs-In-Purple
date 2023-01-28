@@ -1,5 +1,7 @@
 import asyncio
 import datetime
+import discord
+from discord import TextChannel
 from redbot.core import commands
 
 class MessageMover(commands.Cog):
