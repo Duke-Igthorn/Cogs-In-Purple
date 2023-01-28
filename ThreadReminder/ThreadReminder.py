@@ -1,3 +1,4 @@
+# Broken Cog, needs fixing!
 import discord
 from redbot.core import commands
 import asyncio
