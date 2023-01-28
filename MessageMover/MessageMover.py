@@ -9,7 +9,7 @@ class MessageMover(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def msgmove(self, ctx, message_id: int, destination: discord.TextChannel, *message_ids: int):
+    async def msgmvr(self, ctx, message_id: int, destination: discord.TextChannel, *message_ids: int):
         # Fetch the original message by ID
         message = await ctx.channel.fetch_message(message_id)
 
