@@ -6,11 +6,11 @@ class MessageMover(commands.Cog):
         self.bot = bot
 
     @commands.command(name="msgmvr")
-    async def move_messages(self, ctx, dest_channel: discord.TextChannel, *message_ids: int):
+    async def move_messages(self, ctx, dest_channel: discord.TextChannel, *message_ids: str):
         ranges = []
         singles = []
         for message_id in message_ids:
-            if "-" in str(message_id):
+            if "-" in message_id:
                 start_id, end_id = message_id.split("-")
                 ranges.append((int(start_id), int(end_id)))
             else:
