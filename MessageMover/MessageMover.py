@@ -1,3 +1,10 @@
+import discord
+from redbot.core import commands
+
+class MessageMover(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
 @commands.command(name="msgmvr")
 async def move_messages(self, ctx, dest_channel: discord.TextChannel):
     await ctx.send("Please provide the message IDs or ranges to move (separated by commas):")
