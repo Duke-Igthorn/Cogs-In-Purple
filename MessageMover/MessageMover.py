@@ -20,10 +20,10 @@ class MessageMover(commands.Cog):
         async for message in ctx.channel.history():
             for start_id, end_id in ranges:
                 if start_id <= message.id <= end_id:
-                    messages.append(message)
+                    messages.insert(0, message)
                     break
             if message.id in singles:
-                messages.append(message)
+                messages.insert(0, message)
 
         if len(messages) == 0:
             await ctx.send("No messages found in the specified range.")
