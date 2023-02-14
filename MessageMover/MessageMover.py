@@ -58,7 +58,10 @@ class MessageMover(commands.Cog):
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
             if str(reaction.emoji) == "✅":
-                messages_to_delete = [confirmation_message] + [msg async for msg in dest_channel.history() if msg.author == self.bot.user]
+                messages_to_delete = [confirmation_message]
+                async for message in ctx.channel.history(after=ctx.message):
+                    if message.author == self.bot.user and message.id not in messages_to_delete:
+                        messages_to_delete.append(message)
                 for message in messages_to_delete:
                     try:
                         await message.delete()
@@ -91,7 +94,7 @@ class MessageMover(commands.Cog):
                 try:
                     singles.append(int(message_id))
                 except ValueError:
-                    invalid.append(message_id)
+                    invalid.append(message_id)                    
 
         return ranges, singles, invalid
 
