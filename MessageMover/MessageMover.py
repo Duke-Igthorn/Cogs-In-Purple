@@ -1,5 +1,6 @@
 import discord
 from redbot.core import commands
+from typing import List, Tuple
 
 class MessageMover(commands.Cog):
     def __init__(self, bot):
@@ -7,14 +8,7 @@ class MessageMover(commands.Cog):
 
     @commands.command(name="msgmvr")
     async def move_messages(self, ctx, dest_channel: discord.TextChannel, *message_ids: str):
-        ranges = []
-        singles = []
-        for message_id in message_ids:
-            if "-" in message_id:
-                start_id, end_id = message_id.split("-")
-                ranges.append((int(start_id), int(end_id)))
-            else:
-                singles.append(int(message_id))
+        ranges, singles, invalid = self.parse_message_ids(message_ids)
 
         messages = []
         async for message in ctx.channel.history():
@@ -29,6 +23,7 @@ class MessageMover(commands.Cog):
             await ctx.send("No messages found in the specified range.")
             return
 
+        invalid_messages = []
         for message in messages:
             embed = discord.Embed(
                 description=message.content,
@@ -42,10 +37,54 @@ class MessageMover(commands.Cog):
             if len(message.attachments) > 0:
                 embed.set_image(url=message.attachments[0].url)
 
-            await dest_channel.send(embed=embed)
-            await message.delete()
+            try:
+                new_message = await dest_channel.send(embed=embed)
+                await message.delete()
+            except discord.errors.NotFound:
+                invalid_messages.append(str(message.id))
 
-        await ctx.send("Messages moved successfully.")
+        if len(invalid_messages) > 0:
+            invalid_message = f"The following messages could not be moved: {', '.join(invalid_messages)}"
+            await ctx.send(invalid_message)
+
+        confirmation_message = await ctx.send("Messages moved successfully. Please confirm that you understand the implications of this action by reacting with a checkmark. If you do not understand the implications, react with an X. If no reaction is given within 20 seconds, the messages will not be deleted.")
+        await confirmation_message.add_reaction("✅")
+        await confirmation_message.add_reaction("❌")
+
+        def check(reaction, user):
+            return user == ctx.author and reaction.message == confirmation_message
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
+            if str(reaction.emoji) == "✅":
+                messages_to_delete = [confirmation_message] + [msg async for msg in dest_channel.history() if msg.author == self.bot.user]
+                await dest_channel.delete_messages(messages_to_delete)
+                await ctx.message.delete()
+        except asyncio.TimeoutError:
+            pass
+
+    def parse_message_ids(self, message_ids: List[str]) -> Tuple[List[Tuple[int, int]], List[int], List[str]]:
+        ranges = []
+        singles = []
+        invalid = []
+        for message_id in message_ids:
+            if "-" in message_id:
+                try:
+                    start_id, end_id = message_id.split("-")
+                    start_id = int(start_id)
+                    end_id = int(end_id)
+                    if start_id > end_id:
+                        start_id, end_id = end_id, start_id
+                    ranges.append((start_id, end_id))
+                except ValueError:
+                    invalid.append(message_id)
+            else:
+                try:
+                    singles.append(int(message_id))
+                except ValueError:
+                    invalid.append(message_id)
+
+        return ranges, singles, invalid
 
 def setup(bot):
     bot.add_cog(MessageMover(bot))
