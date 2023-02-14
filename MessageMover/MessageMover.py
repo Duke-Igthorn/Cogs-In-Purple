@@ -6,29 +6,24 @@ class MessageMover(commands.Cog):
         self.bot = bot
 
     @commands.command(name="msgmvr")
-    async def move_messages(self, ctx, dest_channel: discord.TextChannel, start_msg_id: int=None, end_msg_id: int=None, *message_ids: int):
+    async def move_messages(self, ctx, dest_channel: discord.TextChannel, *message_ids: int):
+        ranges = []
+        singles = []
+        for message_id in message_ids:
+            if "-" in str(message_id):
+                start_id, end_id = message_id.split("-")
+                ranges.append((int(start_id), int(end_id)))
+            else:
+                singles.append(int(message_id))
+
         messages = []
-        if start_msg_id is not None and end_msg_id is not None:
-            async for message in ctx.channel.history():
-                if message.id == start_msg_id:
+        async for message in ctx.channel.history():
+            for start_id, end_id in ranges:
+                if start_id <= message.id <= end_id:
                     messages.append(message)
                     break
-                elif message.id == end_msg_id:
-                    messages.append(message)
-                    break
-                elif start_msg_id < message.id < end_msg_id:
-                    messages.append(message)
-        elif start_msg_id is not None and end_msg_id is None:
-            messages.append(await ctx.channel.fetch_message(start_msg_id))
-        elif message_ids:
-            for message_id in message_ids:
-                message = await ctx.channel.fetch_message(message_id)
-                if message is not None:
-                    messages.append(message)
-                else:
-                    await ctx.send(f"Message with ID {message_id} not found.")
-        else:
-            await ctx.send("Please provide either a single message ID, a start and end message ID, or multiple message IDs separated by spaces.")
+            if message.id in singles:
+                messages.append(message)
 
         if len(messages) == 0:
             await ctx.send("No messages found in the specified range.")
