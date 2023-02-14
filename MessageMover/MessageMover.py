@@ -6,37 +6,35 @@ class MessageMover(commands.Cog):
         self.bot = bot
 
     @commands.command(name="msgmvr")
-    async def move_messages(self, ctx, dest_channel: discord.TextChannel):
-        await ctx.send("Please provide the message IDs or ranges to move (separated by commas):")
-        msg_ids_input = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-        msg_ids = []
-        for msg_id in msg_ids_input.content.split(','):
-            if '-' in msg_id:
-                range_start, range_end = msg_id.split('-')
-                try:
-                    range_start = int(range_start)
-                except ValueError:
-                    await ctx.send(f"Invalid range start value: {range_start}")
-                    continue
-                try:
-                    range_end = int(range_end)
-                except ValueError:
-                    await ctx.send(f"Invalid range end value: {range_end}")
-                    continue
-                msg_ids += [i for i in range(range_start, range_end+1)]
-            else:
-                try:
-                    msg_ids.append(int(msg_id))
-                except ValueError:
-                    await ctx.send(f"Invalid message ID: {msg_id}")
-                    continue
+    async def move_messages(self, ctx, dest_channel: discord.TextChannel, start_msg_id: int=None, end_msg_id: int=None, *message_ids: int):
+        messages = []
+        if start_msg_id is not None and end_msg_id is not None:
+            async for message in ctx.channel.history():
+                if message.id == start_msg_id:
+                    messages.append(message)
+                    break
+                elif message.id == end_msg_id:
+                    messages.append(message)
+                    break
+                elif start_msg_id < message.id < end_msg_id:
+                    messages.append(message)
+        elif start_msg_id is not None and end_msg_id is None:
+            messages.append(await ctx.channel.fetch_message(start_msg_id))
+        elif message_ids:
+            for message_id in message_ids:
+                message = await ctx.channel.fetch_message(message_id)
+                if message is not None:
+                    messages.append(message)
+                else:
+                    await ctx.send(f"Message with ID {message_id} not found.")
+        else:
+            await ctx.send("Please provide either a single message ID, a start and end message ID, or a comma separated list of message IDs.")
 
-        for msg_id in msg_ids:
-            message = await ctx.channel.fetch_message(msg_id)
-            if message is None:
-                await ctx.send(f"Message with ID {msg_id} not found.")
-                continue
+        if len(messages) == 0:
+            await ctx.send("No messages found in the specified range.")
+            return
 
+        for message in messages:
             embed = discord.Embed(
                 description=message.content,
                 timestamp=message.created_at
