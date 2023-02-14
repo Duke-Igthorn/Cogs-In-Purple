@@ -53,3 +53,6 @@ async def move_messages(self, ctx, dest_channel: discord.TextChannel):
         await message.delete()
 
     await ctx.send("Messages moved successfully.")
+    
+    def setup(bot):
+    bot.add_cog(MessageMover(bot))
