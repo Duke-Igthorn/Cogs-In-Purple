@@ -48,7 +48,7 @@ class MessageMover(commands.Cog):
             invalid_message = f"The following messages could not be moved: {', '.join(invalid_messages)}"
             await ctx.send(invalid_message)
 
-        confirmation_message = await ctx.send("Messages moved successfully. Please confirm that you understand the implications of this action by reacting with a checkmark. If you do not understand the implications, react with an X. If no reaction is given within 20 seconds, the messages will not be deleted.")
+        confirmation_message = await ctx.send("Messages moved successfully. Remove the command messages?")
         await confirmation_message.add_reaction("✅")
         await confirmation_message.add_reaction("❌")
 
