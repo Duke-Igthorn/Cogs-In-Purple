@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands
 from typing import List, Tuple
+import asyncio
 
 class MessageMover(commands.Cog):
     def __init__(self, bot):
@@ -58,7 +59,15 @@ class MessageMover(commands.Cog):
             reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
             if str(reaction.emoji) == "✅":
                 messages_to_delete = [confirmation_message] + [msg async for msg in dest_channel.history() if msg.author == self.bot.user]
-                await dest_channel.delete_messages(messages_to_delete)
+                for message in messages_to_delete:
+                    try:
+                        await message.delete()
+                    except discord.errors.HTTPException as e:
+                        if e.code == 50034:
+                            # Ignore messages that are too old to delete
+                            continue
+                        else:
+                            raise
                 await ctx.message.delete()
         except asyncio.TimeoutError:
             pass
