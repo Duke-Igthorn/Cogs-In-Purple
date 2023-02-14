@@ -28,7 +28,7 @@ class MessageMover(commands.Cog):
                 else:
                     await ctx.send(f"Message with ID {message_id} not found.")
         else:
-            await ctx.send("Please provide either a single message ID, a start and end message ID, or a comma separated list of message IDs.")
+            await ctx.send("Please provide either a single message ID, a start and end message ID, or multiple message IDs separated by spaces.")
 
         if len(messages) == 0:
             await ctx.send("No messages found in the specified range.")
