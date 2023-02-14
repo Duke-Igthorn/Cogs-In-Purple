@@ -65,12 +65,8 @@ class MessageMover(commands.Cog):
                 for message in messages_to_delete:
                     try:
                         await message.delete()
-                    except discord.errors.HTTPException as e:
-                        if e.code == 50034:
-                            # Ignore messages that are too old to delete
-                            continue
-                        else:
-                            raise
+                    except discord.errors.NotFound:
+                        pass
                 await ctx.message.delete()
         except asyncio.TimeoutError:
             pass
