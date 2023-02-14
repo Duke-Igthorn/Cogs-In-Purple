@@ -1,5 +1,4 @@
 import discord
-from discord.ext import commands
 from redbot.core import commands
 
 class MessageMover(commands.Cog):
@@ -21,8 +20,8 @@ class MessageMover(commands.Cog):
         await ctx.send("Please provide the destination channel:")
         dest_channel_input = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
         dest_channel = discord.utils.get(ctx.guild.channels, name=dest_channel_input.content)
-        
-        if dest_channel is None:
+
+        if dest_channel is None or not isinstance(dest_channel, discord.TextChannel):
             await ctx.send("Invalid channel name. Please try again.")
             return
 
@@ -31,7 +30,7 @@ class MessageMover(commands.Cog):
             if message is None:
                 await ctx.send(f"Message with ID {msg_id} not found.")
                 continue
-            
+
             embed = discord.Embed(
                 description=message.content,
                 timestamp=message.created_at
