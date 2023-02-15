@@ -7,71 +7,54 @@ class MessageMover(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="msgmvr")
-    async def move_messages(self, ctx, dest_channel: discord.TextChannel, *message_ids: str):
-        ranges, singles, invalid = self.parse_message_ids(message_ids)
-
-        messages = []
-        async for message in ctx.channel.history():
-            for start_id, end_id in ranges:
-                if start_id <= message.id <= end_id:
-                    messages.insert(0, message)
-                    break
-            if message.id in singles:
-                messages.insert(0, message)
-
-        if len(messages) == 0:
-            await ctx.send("No messages found in the specified range.")
-            return
-
-        invalid_messages = []
-        for message in messages:
-            embed = discord.Embed(
-                description=message.content,
-                timestamp=message.created_at
-            )
-            embed.set_author(
-                name=message.author.name,
-                icon_url=message.author.avatar_url
-            )
-
-            if len(message.attachments) > 0:
-                embed.set_image(url=message.attachments[0].url)
-
+    @commands.command()
+    async def msgmvr(self, ctx, dest_channel: discord.TextChannel, *message_ids: str):
+        ranges, singles, invalid = self.parse_message_ids(ctx, message_ids)
+        messages_to_delete = []
+        messages_to_send = []
+        for single in singles:
             try:
-                new_message = await dest_channel.send(embed=embed)
-                await message.delete()
-            except discord.errors.NotFound:
-                invalid_messages.append(str(message.id))
+                message = await ctx.channel.fetch_message(single)
+                messages_to_delete.append(message)
+                messages_to_send.append(message)
+            except discord.NotFound:
+                invalid.append(str(single))
+        for start, end in ranges:
+            messages = await ctx.channel.history(limit=500).flatten()
+            messages_to_move = []
+            for message in messages:
+                if message.id >= start and message.id <= end:
+                    messages_to_move.append(message)
+                    messages_to_delete.append(message)
+                    messages_to_send.append(message)
+            messages_to_move.reverse()
+            await dest_channel.send(f"{len(messages_to_move)} messages being moved.")
+            for message in messages_to_move:
+                embed = discord.Embed(description=message.content, timestamp=message.created_at)
+                embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+                await dest_channel.send(embed=embed)
 
-        if len(invalid_messages) > 0:
-            invalid_message = f"The following messages could not be moved: {', '.join(invalid_messages)}"
+        if len(invalid) > 0:
+            invalid_message = f"The following message IDs are invalid: {', '.join(invalid)}"
             await ctx.send(invalid_message)
+        else:
+            await ctx.message.add_reaction("\u2705") # green checkmark
+            await ctx.message.add_reaction("\u274C") # red X
 
-        confirmation_message = await ctx.send("Messages moved successfully. Remove the command messages?")
-        await confirmation_message.add_reaction("✅")
-        await confirmation_message.add_reaction("❌")
+            def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) in ['\u2705', '\u274C']
+            try:
+                reaction, _ = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
+            except asyncio.TimeoutError:
+                pass
+            else:
+                if str(reaction.emoji) == '\u2705':
+                    await dest_channel.delete_messages(messages_to_send)
+                    await ctx.channel.delete_messages(messages_to_delete + [ctx.message])
+                elif str(reaction.emoji) == '\u274C':
+                    await ctx.message.clear_reactions()
 
-        def check(reaction, user):
-            return user == ctx.author and reaction.message == confirmation_message
-
-        try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
-            if str(reaction.emoji) == "✅":
-                messages_to_delete = [confirmation_message]
-                async for message in ctx.channel.history(after=ctx.message):
-                    if message.author == self.bot.user and message.id not in messages_to_delete:
-                        messages_to_delete.append(message)
-                for message in messages_to_delete:
-                    try:
-                        await message.delete()
-                    except discord.errors.NotFound:
-                        pass
-                await ctx.message.delete()
-        except asyncio.TimeoutError:
-            pass
-
-    def parse_message_ids(self, message_ids: List[str]) -> Tuple[List[Tuple[int, int]], List[int], List[str]]:
+    def parse_message_ids(self, ctx, message_ids: List[str]) -> Tuple[List[Tuple[int, int]], List[int], List[str]]:
         ranges = []
         singles = []
         invalid = []
@@ -94,7 +77,7 @@ class MessageMover(commands.Cog):
 
         if len(invalid) > 0:
             invalid_message = f"The following message IDs are invalid: {', '.join(invalid)}"
-            await ctx.send(invalid_message)
+            ctx.send(invalid_message)
 
         return ranges, singles, invalid
 
