@@ -72,27 +72,31 @@ class MessageMover(commands.Cog):
             pass
 
     def parse_message_ids(self, message_ids: List[str]) -> Tuple[List[Tuple[int, int]], List[int], List[str]]:
-        ranges = []
-        singles = []
-        invalid = []
-        for message_id in message_ids:
-            if "-" in message_id:
-                try:
-                    start_id, end_id = message_id.split("-")
-                    start_id = int(start_id)
-                    end_id = int(end_id)
-                    if start_id > end_id:
-                        start_id, end_id = end_id, start_id
-                    ranges.append((start_id, end_id))
-                except ValueError:
-                    invalid.append(message_id)
-            else:
-                try:
-                    singles.append(int(message_id))
-                except ValueError:
-                    invalid.append(message_id)                    
+    ranges = []
+    singles = []
+    invalid = []
+    for message_id in message_ids:
+        if "-" in message_id:
+            try:
+                start_id, end_id = message_id.split("-")
+                start_id = int(start_id)
+                end_id = int(end_id)
+                if start_id > end_id:
+                    start_id, end_id = end_id, start_id
+                ranges.append((start_id, end_id))
+            except ValueError:
+                invalid.append(message_id)
+        else:
+            try:
+                singles.append(int(message_id))
+            except ValueError:
+                invalid.append(message_id)
 
-        return ranges, singles, invalid
+    if len(invalid) > 0:
+        invalid_message = f"The following message IDs are invalid: {', '.join(invalid)}"
+        ctx.send(invalid_message)
+
+    return ranges, singles, invalid
 
 def setup(bot):
     bot.add_cog(MessageMover(bot))
