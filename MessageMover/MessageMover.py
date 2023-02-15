@@ -94,7 +94,7 @@ class MessageMover(commands.Cog):
 
         if len(invalid) > 0:
             invalid_message = f"The following message IDs are invalid: {', '.join(invalid)}"
-            ctx.send(invalid_message)
+            await ctx.send(invalid_message)
 
         return ranges, singles, invalid
 
