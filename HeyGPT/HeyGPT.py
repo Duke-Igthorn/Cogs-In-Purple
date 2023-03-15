@@ -8,7 +8,7 @@ class HeyGPT(commands.Cog):
         self.config = Config.get_conf(self, identifier=16080501420211005, force_registration=True)
         default_global = {
             "openai_api_key": None,
-            "engine": "text-davinci-002"
+            "engine": "text-davinci-003"
         }
         self.config.register_global(**default_global)
         self.engines = {
@@ -18,6 +18,11 @@ class HeyGPT(commands.Cog):
             4: "text-ada-002",
             5: "text-davinci-003"
         }
+
+    async def send_long_message(self, ctx, message: str, max_chars: int = 2000):
+        while message:
+            to_send, message = message[:max_chars], message[max_chars:]
+            await ctx.send(f"{ctx.author.mention} {to_send}")
 
     @commands.command(name="heygpt")
     async def heygpt(self, ctx, *, message: str):
@@ -39,7 +44,7 @@ class HeyGPT(commands.Cog):
             temperature=0.5,
         )
         reply = response.choices[0].text.strip()
-        await ctx.send(f"{ctx.author.mention} {reply}")
+        await self.send_long_message(ctx, reply)
 
     @commands.command(name="setgptapikey")
     @checks.is_owner()
