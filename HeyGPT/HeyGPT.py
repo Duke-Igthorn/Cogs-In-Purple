@@ -2,7 +2,7 @@ import os
 import openai
 from redbot.core import commands, checks, Config
 
-class ChatGPT(commands.Cog):
+class HeyGPT(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=16080501420211005, force_registration=True)
@@ -65,4 +65,4 @@ class ChatGPT(commands.Cog):
         await ctx.send(f"The GPT-3 engine has been set to {engine}.")
 
 def setup(bot):
-    bot.add_cog(ChatGPT(bot))
+    bot.add_cog(HeyGPT(bot))
