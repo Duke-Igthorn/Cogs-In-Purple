@@ -15,7 +15,8 @@ class HeyGPT(commands.Cog):
             1: "text-davinci-002",
             2: "text-curie-002",
             3: "text-babbage-002",
-            4: "text-ada-002"
+            4: "text-ada-002",
+            5: "text-davinci-003"
         }
 
     @commands.command(name="heygpt")
