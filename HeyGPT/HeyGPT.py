@@ -38,7 +38,7 @@ class HeyGPT(commands.Cog):
         response = openai.Completion.create(
             engine=engine,
             prompt=prompt,
-            max_tokens=150,
+            max_tokens=100,
             n=1,
             stop=None,
             temperature=0.5,
