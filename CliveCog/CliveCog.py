@@ -29,10 +29,10 @@ class CliveCog(commands.Cog):
 
         # Format the timestamp in the desired format
         timestamp = int(next_monday.timestamp())
-        timestamp_str = f"<t:{timestamp}:f>"
+        timestamp_str = f"<t:{timestamp}:F>"
         
         # Replace the existing timestamp with the new timestamp
-        self.memorized_message = re.sub(r"<t:\d+:f>", timestamp_str, self.memorized_message)
+        self.memorized_message = re.sub(r"<t:\d+:F>", timestamp_str, self.memorized_message)
         
         # If the message still doesn't have timestamp, add it to the end
         if "<t:" not in self.memorized_message:
