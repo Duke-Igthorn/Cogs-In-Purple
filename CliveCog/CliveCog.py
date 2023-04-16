@@ -21,8 +21,8 @@ class CliveCog(commands.Cog):
         # Delete all messages in the channel
         await ctx.channel.purge(limit=None)
 
-        # Get the date 7 days from now at midnight
-        now = datetime.datetime.utcnow()
+        # Get the date 7 days from now at 1AM UTC+2
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=2)
         days_ahead = 7 - now.weekday()
         next_monday = now + datetime.timedelta(days=days_ahead)
         next_monday = next_monday.replace(hour=1, minute=0, second=0, microsecond=0)
