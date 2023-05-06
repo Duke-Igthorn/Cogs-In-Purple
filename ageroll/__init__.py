@@ -1,4 +1,4 @@
 from .AGERoll import AGERoll
 
-def setup(bot):
-    bot.add_cog(AGERoll())
+async def setup(bot):
+    await bot.add_cog(AGERoll())
