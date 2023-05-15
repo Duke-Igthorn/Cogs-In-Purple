@@ -45,9 +45,9 @@ class CliveCog(commands.Cog):
         # Replace the existing timestamp with the new timestamp
         self.memorized_message = re.sub(r"<t:\d+:F>", timestamp_str, self.memorized_message)
         
-        # If the message still doesn't have timestamp, add it to the end
+        # If the message still doesn't have timestamp, add a space and it to the end
         if "<t:" not in self.memorized_message:
-            self.memorized_message += timestamp_str
+            self.memorized_message += " " + timestamp_str
         
         # Send the memorized message with the new timestamp
         await ctx.send(f"{self.memorized_message}")
