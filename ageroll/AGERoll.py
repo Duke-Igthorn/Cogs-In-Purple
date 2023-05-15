@@ -1,4 +1,5 @@
 import random
+from discord import Embed, Color
 from redbot.core import commands
 
 class AGERoll(commands.Cog):
@@ -15,26 +16,35 @@ class AGERoll(commands.Cog):
         dice = [self.roll_dice(), self.roll_dice(), self.roll_dice()]
         total = sum(dice) + modifier
         stunt_points = None
+        outcome = None
 
         if total >= target_number:
             if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
                 stunt_points = dice[0]
             if dice[0] == 6 and dice[1] == 6 and dice[2] == 6:
-                await ctx.send("Legendary Success!")
+                outcome = "Legendary Success!"
             else:
-                await ctx.send("Success!")
+                outcome = "Success!"
         else:
             if dice[0] == 1 and dice[1] == 1 and dice[2] == 1:
-                await ctx.send("Catastrophic Botch!")
+                outcome = "Catastrophic Botch!"
             else:
                 if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
-                    await ctx.send("Botch!")
+                    outcome = "Botch!"
                 else:
-                    await ctx.send("Failure!")
+                    outcome = "Failure!"
 
-        await ctx.send(f"Target Number: {target_number}\nStunt Die: {dice[0]}\n2nd Die  : {dice[1]}\n3rd Die  : {dice[2]}\nModifier: {modifier}\nTotal: {total}")
+        # Create the embed
+        embed = Embed(
+            title="AGE Roll",
+            description=f"**Outcome**: {outcome}\n**Target Number**: {target_number}\n**Stunt Die**: {dice[0]}\n**2nd Die**: {dice[1]}\n**3rd Die**: {dice[2]}\n**Modifier**: {modifier}\n**Total**: {total}",
+            color=Color.blue()
+        )
+
         if stunt_points is not None:
-            await ctx.send(f"Stunt Points: {stunt_points}")
+            embed.add_field(name="Stunt Points", value=str(stunt_points))
+
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(AGERoll(bot))
