@@ -37,7 +37,13 @@ class AGERoll(commands.Cog):
         # Create the embed
         embed = Embed(
             title="AGE Roll",
-            description=f"**Outcome**: {outcome}\n**Target Number**: {target_number}\n**Stunt Die**: {dice[0]}\n**2nd Die**: {dice[1]}\n**3rd Die**: {dice[2]}\n**Modifier**: {modifier}\n**Total**: {total}",
+            description=f"**Outcome**       : {outcome}\n"
+                        f"**Target Number** : {target_number}\n"
+                        f"**Stunt Die**     : {dice[0]}\n"
+                        f"**2nd Die**       : {dice[1]}\n"
+                        f"**3rd Die**       : {dice[2]}\n"
+                        f"**Modifier**      : {modifier}\n"
+                        f"**Total**         : {total}",
             color=Color.blue()
         )
 
