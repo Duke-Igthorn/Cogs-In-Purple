@@ -28,7 +28,6 @@ class CliveCog(commands.Cog):
             return
 
         self.memorized_message = first_message.content
-        await ctx.send(f"First message: {self.memorized_message}")
 
         # Delete all messages in the channel
         await ctx.channel.purge(limit=None)
@@ -51,7 +50,7 @@ class CliveCog(commands.Cog):
             self.memorized_message += timestamp_str
         
         # Send the memorized message with the new timestamp
-        await ctx.send(f"New message: {self.memorized_message}")
+        await ctx.send(f"{self.memorized_message}")
 
 
 def setup(bot):
