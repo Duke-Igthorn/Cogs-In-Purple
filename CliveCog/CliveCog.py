@@ -14,16 +14,19 @@ class CliveCog(commands.Cog):
             await ctx.send("This command can only be used in the `live` channel.")
             return False
         return True
-
-    @commands.command()
-    async def clive(self, ctx):
-        # Get the first message in the channel
-        first_message = await ctx.channel.history(limit=1, oldest_first=True).next()
-        self.memorized_message = first_message.content if first_message else None
-        if self.memorized_message is None:
-            await ctx.send("No message to remember.")
-            return
-
+    
+@commands.command()
+async def clive(self, ctx):
+    # Get the first message in the channel
+    try:
+        first_message = await ctx.channel.history(limit=1, oldest_first=True).__anext__()
+    except StopAsyncIteration:
+        first_message = None
+    self.memorized_message = first_message.content if first_message else None
+    if self.memorized_message is None:
+        await ctx.send("No message to remember.")
+        return
+    
         # Delete all messages in the channel
         await ctx.channel.purge(limit=None)
 
