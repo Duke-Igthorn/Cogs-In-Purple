@@ -1,5 +1,4 @@
 import random
-from discord import Embed, Color
 from redbot.core import commands
 
 class AGERoll(commands.Cog):
@@ -34,23 +33,21 @@ class AGERoll(commands.Cog):
                 else:
                     outcome = "Failure!"
 
-        # Create the embed
-        embed = Embed(
-            title="AGE Roll",
-            description=f"**Outcome**       : {outcome}\n"
-                        f"**Target Number** : {target_number}\n"
-                        f"**Stunt Die**     : {dice[0]}\n"
-                        f"**2nd Die**       : {dice[1]}\n"
-                        f"**3rd Die**       : {dice[2]}\n"
-                        f"**Modifier**      : {modifier}\n"
-                        f"**Total**         : {total}",
-            color=Color.blue()
-        )
+        # Create the table
+        table = f"```\n" \
+                 f"{'Outcome':<15}: {outcome}\n" \
+                 f"{'Target Number':<15}: {target_number}\n" \
+                 f"{'Stunt Die':<15}: {dice[0]}\n" \
+                 f"{'2nd Die':<15}: {dice[1]}\n" \
+                 f"{'3rd Die':<15}: {dice[2]}\n" \
+                 f"{'Modifier':<15}: {modifier}\n" \
+                 f"{'Total':<15}: {total}\n" \
+                 f"```"
+
+        await ctx.send(table)
 
         if stunt_points is not None:
-            embed.add_field(name="Stunt Points", value=str(stunt_points))
-
-        await ctx.send(embed=embed)
+            await ctx.send(f"Stunt Points: {stunt_points}")
 
 def setup(bot):
     bot.add_cog(AGERoll(bot))
