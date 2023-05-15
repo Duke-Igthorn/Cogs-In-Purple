@@ -1,5 +1,6 @@
 import datetime
 import re
+import pytz
 from redbot.core import commands
 
 class CliveCog(commands.Cog):
@@ -7,16 +8,19 @@ class CliveCog(commands.Cog):
         self.bot = bot
         self.memorized_message = None
 
-    @commands.command()
-    async def clive(self, ctx):
+    async def cog_check(self, ctx):
+        """Check if the command is used in the 'live' channel."""
         if ctx.channel.name.lower() != "live":
             await ctx.send("This command can only be used in the `live` channel.")
-            return
+            return False
+        return True
 
+    @commands.command()
+    async def clive(self, ctx):
         # Get the first message in the channel
-        async for message in ctx.channel.history(limit=1, oldest_first=True):
-            first_message = message
-            break
+        first_message = await ctx.channel.history(limit=1, oldest_first=True).flatten()
+        first_message = first_message[0] if first_message else None
+
         self.memorized_message = first_message.content if first_message else None
         if self.memorized_message is None:
             await ctx.send("No message to remember.")
@@ -26,7 +30,7 @@ class CliveCog(commands.Cog):
         await ctx.channel.purge(limit=None)
 
         # Get the date 7 days from now at 1AM UTC+2
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+        now = datetime.datetime.now(pytz.timezone('UTC')).astimezone(pytz.timezone('Europe/Paris'))
         days_ahead = 7 - now.weekday()
         next_monday = now + datetime.timedelta(days=days_ahead)
         next_monday = next_monday.replace(hour=1, minute=0, second=0, microsecond=0)
@@ -46,5 +50,5 @@ class CliveCog(commands.Cog):
         await ctx.send(f"{self.memorized_message}")
 
 
-async def setup(bot):
-    await bot.add_cog(CliveCog(bot))
+def setup(bot):
+    bot.add_cog(CliveCog(bot))
