@@ -31,8 +31,8 @@ class AGERoll(commands.Cog):
                     await ctx.send("Botch!")
                 else:
                     await ctx.send("Failure!")
-        
-        await ctx.send(f"Stunt Die: {dice[0]}\nDie 2    : {dice[1]}\nDie 3    : {dice[2]}\nTotal: {total}")
+
+        await ctx.send(f"Target Number: {target_number}\nStunt Die: {dice[0]}\nDie 2    : {dice[1]}\nDie 3    : {dice[2]}\nModifier: {modifier}\nTotal: {total}")
         if stunt_points is not None:
             await ctx.send(f"Stunt Points: {stunt_points}")
 
