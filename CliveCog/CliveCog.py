@@ -16,13 +16,13 @@ class CliveCog(commands.Cog):
         return True
 
     @commands.command()
-async def clive(self, ctx):
-    # Get the first message in the channel
-    first_message = await ctx.channel.history(limit=1, oldest_first=True).next()
-    self.memorized_message = first_message.content if first_message else None
-    if self.memorized_message is None:
-        await ctx.send("No message to remember.")
-        return
+    async def clive(self, ctx):
+        # Get the first message in the channel
+        first_message = await ctx.channel.history(limit=1, oldest_first=True).next()
+        self.memorized_message = first_message.content if first_message else None
+        if self.memorized_message is None:
+            await ctx.send("No message to remember.")
+            return
 
         # Delete all messages in the channel
         await ctx.channel.purge(limit=None)
