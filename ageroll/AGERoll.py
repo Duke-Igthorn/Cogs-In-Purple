@@ -5,18 +5,20 @@ class AGERoll(commands.Cog):
     @staticmethod
     def roll_dice():
         return random.randint(1, 6)
-        
+
+    @staticmethod
+    def dice_emoji(value, is_stunt=False):
+        prefix = "stunt_" if is_stunt else ""
+        return f":{prefix}D6_{value}:"
+
     @commands.command()
     async def ageroll(self, ctx, target_number: int = 11, modifier: int = 0):
-        if not isinstance(target_number, int) or not isinstance(modifier, int):
-            await ctx.send("Both target number and modifier need to be integers.")
-            return
-
         dice = [self.roll_dice(), self.roll_dice(), self.roll_dice()]
         total = sum(dice) + modifier
         stunt_points = None
         outcome = None
 
+        # Determine the outcome
         if total >= target_number:
             if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
                 stunt_points = dice[0]
@@ -33,21 +35,19 @@ class AGERoll(commands.Cog):
                 else:
                     outcome = "Failure!"
 
-        # Create the table
-        table = f"```\n" \
-                 f"{'Outcome':<15}: {outcome}\n" \
-                 f"{'Target Number':<15}: {target_number}\n" \
-                 f"{'Stunt Die':<15}: {dice[0]}\n" \
-                 f"{'2nd Die':<15}: {dice[1]}\n" \
-                 f"{'3rd Die':<15}: {dice[2]}\n" \
-                 f"{'Modifier':<15}: {modifier}\n" \
-                 f"{'Total':<15}: {total}\n" \
-                 f"```"
+        # Dice emojis
+        dice_emojis = f"{self.dice_emoji(dice[0], is_stunt=True)} {self.dice_emoji(dice[1])} {self.dice_emoji(dice[2])}"
 
-        await ctx.send(table)
+        # Result message
+        result_message = f"{dice_emojis}\n\n" \
+                         f"**Total:** `{total}`\n" \
+                         f"**Target Number (TN):** `{target_number}`\n" \
+                         f"**Outcome:** {outcome}\n"
 
         if stunt_points is not None:
-            await ctx.send(f"Stunt Points: {stunt_points}")
+            result_message += f"**Stunt Points:** `{stunt_points}`"
+
+        await ctx.send(result_message)
 
 def setup(bot):
     bot.add_cog(AGERoll(bot))
