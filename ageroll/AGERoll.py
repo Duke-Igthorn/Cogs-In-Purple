@@ -36,34 +36,34 @@ class AGERoll(commands.Cog):
         stunt_points = None
         outcome = None
 
-        # Determine the outcome
+        # Determine the outcome and assign fitting emojis
         if total >= target_number:
             if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
                 stunt_points = dice[0]
             if dice[0] == 6 and dice[1] == 6 and dice[2] == 6:
-                outcome = "Legendary Success!"
+                outcome = ":trophy: Legendary Success! :trophy:"
             else:
-                outcome = "Success!"
+                outcome = ":star2: Success! :star2:"
         else:
             if dice[0] == 1 and dice[1] == 1 and dice[2] == 1:
-                outcome = "Catastrophic Botch!"
+                outcome = ":boom: Catastrophic Botch! :boom:"
             else:
                 if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
-                    outcome = "Botch!"
+                    outcome = ":x: Botch! :x:"
                 else:
-                    outcome = "Failure!"
+                    outcome = ":thumbsdown: Failure! :thumbsdown:"
 
         # Dice emojis
         dice_emojis = f"{self.dice_emoji(dice[0], is_stunt=True)} {self.dice_emoji(dice[1])} {self.dice_emoji(dice[2])}"
 
-        # Result message
+        # Result message with larger and bold numbers
         result_message = f"{dice_emojis}\n\n" \
-                         f"**Total:** `{total}`\n" \
-                         f"**Target Number (TN):** `{target_number}`\n" \
+                         f"**Total:** **`{total}`**\n" \
+                         f"**Target Number (TN):** **`{target_number}`**\n" \
                          f"**Outcome:** {outcome}\n"
 
         if stunt_points is not None:
-            result_message += f"**Stunt Points:** `{stunt_points}`"
+            result_message += f"**Stunt Points:** **`{stunt_points}`**"
 
         await ctx.send(result_message)
 
