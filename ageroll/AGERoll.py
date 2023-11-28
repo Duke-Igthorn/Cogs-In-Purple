@@ -64,7 +64,7 @@ class AGERoll(commands.Cog):
                          f"**Outcome:** {outcome}\n"
 
         if stunt_points is not None:
-            result_message += f"**Stunt Points:** ***{stunt_points}***"
+            result_message += f"**:boom:  Stunt Points:** ***{stunt_points}  :boom:***"
 
         await ctx.send(result_message)
 
