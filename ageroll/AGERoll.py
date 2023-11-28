@@ -58,12 +58,12 @@ class AGERoll(commands.Cog):
 
         # Result message with larger and bold numbers
         result_message = f"{dice_emojis}\n\n" \
-                         f"**Total:** **`{total}`**\n" \
-                         f"**Target Number (TN):** **`{target_number}`**\n" \
+                         f"**Total:** ***{total}***\n" \
+                         f"**Target Number (TN):** ***{target_number}***\n" \
                          f"**Outcome:** {outcome}\n"
 
         if stunt_points is not None:
-            result_message += f"**Stunt Points:** **`{stunt_points}`**"
+            result_message += f"**Stunt Points:** ***{stunt_points}***"
 
         await ctx.send(result_message)
 
