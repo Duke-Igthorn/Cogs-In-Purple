@@ -61,7 +61,7 @@ class AGERoll(commands.Cog):
         result_message = f"{dice_emojis}{modifier_str}\n\n" \
                          f"**Total:** ***{total}***\n" \
                          f"**Target Number (TN):** ***{target_number}***\n" \
-                         f"**Outcome:** {outcome}\n"
+                         f"**Outcome:** ***{outcome}***\n"
 
         if stunt_points is not None:
             result_message += f"**:boom:  Stunt Points:** ***{stunt_points}  :boom:***"
