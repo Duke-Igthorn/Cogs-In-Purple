@@ -51,13 +51,14 @@ class AGERoll(commands.Cog):
                 if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
                     outcome = ":cold_face: Botch! :cold_face:"
                 else:
-                    outcome = ":x: Failure! :x:"
+                    outcome = ":thumbsdown: Failure! :thumbsdown:"
 
-        # Dice emojis
+        # Dice emojis with modifier
         dice_emojis = f"{self.dice_emoji(dice[0], is_stunt=True)} {self.dice_emoji(dice[1])} {self.dice_emoji(dice[2])}"
+        modifier_str = f" + {modifier}" if modifier else ""
 
         # Result message with larger and bold numbers
-        result_message = f"{dice_emojis}\n\n" \
+        result_message = f"{dice_emojis}{modifier_str}\n\n" \
                          f"**Total:** ***{total}***\n" \
                          f"**Target Number (TN):** ***{target_number}***\n" \
                          f"**Outcome:** {outcome}\n"
