@@ -46,12 +46,12 @@ class AGERoll(commands.Cog):
                 outcome = ":star2: Success! :star2:"
         else:
             if dice[0] == 1 and dice[1] == 1 and dice[2] == 1:
-                outcome = ":boom: Catastrophic Botch! :boom:"
+                outcome = ":skull: Catastrophic Botch! :skull:"
             else:
                 if dice[0] == dice[1] or dice[0] == dice[2] or dice[1] == dice[2]:
-                    outcome = ":x: Botch! :x:"
+                    outcome = ":cold_face: Botch! :cold_face:"
                 else:
-                    outcome = ":thumbsdown: Failure! :thumbsdown:"
+                    outcome = ":x: Failure! :x:"
 
         # Dice emojis
         dice_emojis = f"{self.dice_emoji(dice[0], is_stunt=True)} {self.dice_emoji(dice[1])} {self.dice_emoji(dice[2])}"
