@@ -2,6 +2,22 @@ import random
 from redbot.core import commands
 
 class AGERoll(commands.Cog):
+    # Emoji IDs
+    emoji_ids = {
+        'D6_1': '1178989224226205777',
+        'D6_2': '1178989225543221268',
+        'D6_3': '1178989227812343808',
+        'D6_4': '1178989229360029736',
+        'D6_5': '1178989231427821588',
+        'D6_6': '1178989232702902303',
+        'stunt_D6_1': '1178989234099589200',
+        'stunt_D6_2': '1178989236586815538',
+        'stunt_D6_3': '1178989237941567550',
+        'stunt_D6_4': '1178989239896121354',
+        'stunt_D6_5': '1178989506720964649',
+        'stunt_D6_6': '1178989241800339516'
+    }
+
     @staticmethod
     def roll_dice():
         return random.randint(1, 6)
@@ -9,7 +25,9 @@ class AGERoll(commands.Cog):
     @staticmethod
     def dice_emoji(value, is_stunt=False):
         prefix = "stunt_" if is_stunt else ""
-        return f":{prefix}D6_{value}:"
+        emoji_name = f"{prefix}D6_{value}"
+        emoji_id = AGERoll.emoji_ids[emoji_name]
+        return f"<:{emoji_name}:{emoji_id}>"
 
     @commands.command()
     async def ageroll(self, ctx, target_number: int = 11, modifier: int = 0):
